@@ -11,6 +11,7 @@ import ShowUser from './pages/users/Show.vue'
 import TemplatePost from './pages/posts/Template.vue'
 import IndexPost from './pages/posts/Index.vue'
 import ShowPost from './pages/posts/Show.vue'
+import CreatePost from './pages/posts/Create.vue'
 
 const routes = [
     { path: '/', name: 'home', component: Home },
@@ -22,11 +23,11 @@ const routes = [
         ] 
     },
 
-    // { path: '/posts', name: 'posts', component: IndexPost }
     { 
         path: '/posts', name: 'postTemplate', component: TemplatePost, children: [
             { path: '', name: 'posts', component: IndexPost },
-            { path: ':id', name: 'postId', component: ShowPost }
+            { path: ':id', name: 'postId', component: ShowPost },
+            { path: 'create', name: 'createPost', component: CreatePost }
         ] 
     },
 

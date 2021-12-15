@@ -1,4 +1,7 @@
 <template>
+    <div>
+        <router-link class="btn btn-primary" :to="{name: 'createPost'}">Create Post</router-link>
+    </div>
     <div v-if="loading" class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>            
