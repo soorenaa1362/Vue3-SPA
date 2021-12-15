@@ -1,109 +1,79 @@
 <template>
-    <h2 class="mb-2">Edit Post :</h2>
-    <div class="col-md-6">
-        <form @submit.prevent="validate">
-            <div class="mb-3">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-control" v-model.lazy.trim="form.title">
-                <div class="form-text text-danger">
-                    {{ form.titleErrorText }}
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Body</label>
-                <textarea class="form-control" rows="5" v-model.lazy.trim="form.body"></textarea>
-                <div class="form-text text-danger">
-                    {{ form.titleErrorBody }}
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" :disabled="loading">
-                <div v-if="loading" class="spinner-border spinner-border-sm" role="status"></div>
-                Edit Post
-            </button>
-        </form>
+    <div v-if="pageLoading" class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
 
+    <div v-else class="col-md-6">
+        <h2 class="mb-5">Edit Post :</h2>
+
+        <PostForm
+        @formData="updatePost"
+        :button-loading="loading"
+        button-text="Edit Post"
+        :post="post"
+        />
     </div>
 </template>
 
 <script>
-import { reactive, ref } from '@vue/reactivity'
-import axios from 'axios';
-import Swal from 'sweetalert2'
-import { useRoute } from 'vue-router';
+import PostForm from "@/components/posts/Form.vue";
+import { ref } from "vue";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useRoute } from "vue-router";
+
 export default {
-    setup(){
-        const form = reactive({
-            title: "",            
-            body: "",
-            titleErrorText: '',
-            titleErrorBody: '',
-        });
+    components: {
+        PostForm,
+    },
+    setup() {
+        const loading = ref(false);
+        const pageLoading = ref(true);
+        const post = ref({});
+        const route = useRoute();
 
-        const loading = ref(false)
-        const route = useRoute()
-
-        function getPost(){
-            axios
+        function getPost() {
+        axios
             .get(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`)
             .then(function (response) {
-                form.title = response.data.title
-                form.body = response.data.body
+                post.value = response.data;
+                pageLoading.value = false
             })
             .catch(function (error) {
                 console.log(error);
             });
         }
-
         getPost();
-
-        function validate(){
-            if(form.title === ""){
-                form.titleErrorText = "Title is required..."
-            }else{
-                form.titleErrorText = ""
-            }
-
-            if(form.body === ""){
-                form.titleErrorBody = "Body is required..."
-            }else{
-                form.titleErrorBody = ""
-            }
-
-            if(form.title !== "" && form.body !== ""){                
-                loading.value = true
-                updatePost()
-            }
-        }
-
-        function updatePost(){
-            axios
-            .put(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`,{
+        
+        function updatePost(formData) {
+        loading.value = true;
+        console.log();
+        axios
+            .put(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`, {
                 id: route.params.id,
-                title: form.title,
-                body: form.body,
+                title: formData.title,
+                body: formData.body,
                 userId: 1,
             })
             .then(function () {
-                loading.value = false
+                loading.value = false;
+
                 Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Post updated successfully...',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
+                    title: "Thanks!",
+                    text: "Post update successfully",
+                    icon: "success",
+                    confirmButtonText: "Ok",
+                });
             })
             .catch(function (error) {
-                // handle error
                 console.log(error);
             });
         }
 
-        return { form, validate, loading }
-    }
-}
+        return { updatePost, loading, post,pageLoading };
+    },
+};
 </script>
 
 <style>
-
 </style>
