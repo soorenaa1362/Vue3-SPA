@@ -8,6 +8,8 @@
                     application in a matter of minutes. Passport is built on top of the 
                     League OAuth2 server that is maintained by Andy Millington and Simon Hamp.
                 </p>
+                <router-link class="btn btn-dark" to="/users">Users</router-link>
+                <!-- <router-link class="btn btn-dark" :to="{name:'users'}">Users</router-link> -->
             </div>
         </div>
     </div>

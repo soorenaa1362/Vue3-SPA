@@ -2,9 +2,9 @@
     <div v-if="loading" class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>            
-    <div v-else class="col-md-4" v-for="user in users" :key="user.id">
+    <div v-else class="col-md-4">
         <UserCardView :user="user" />
-    </div>        
+    </div>
 </template>
 
 <script>
@@ -18,18 +18,16 @@ export default {
         UserCardView
     },
     setup(){
-        const users = ref([])
+        const user = ref({})
         const loading = ref(true)
         const route = useRoute()
 
-        console.log()
-
-        function getUsers(){
+        function getUser(){
             axios
-            .get('https://jsonplaceholder.typicode.com/users')
+            .get(`https://jsonplaceholder.typicode.com/users/${route.params.id}`)
             .then(function (response) {
                 // handle success
-                users.value = response.data
+                user.value = response.data
                 loading.value = false
             })
             .catch(function (error) {
@@ -38,9 +36,9 @@ export default {
             });
         }
 
-        getUsers();
+        getUser();
 
-        return {users, loading, route}
+        return {user, loading}
     }
 }
 </script>
