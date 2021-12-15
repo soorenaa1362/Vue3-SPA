@@ -1,5 +1,5 @@
 <template>
-    <h2 class="mb-3">Create Post :</h2>
+    <h2 class="mb-2">Edit Post :</h2>
     <div class="col-md-6">
         <form @submit.prevent="validate">
             <div class="mb-3">
@@ -18,7 +18,7 @@
             </div>
             <button type="submit" class="btn btn-primary" :disabled="loading">
                 <div v-if="loading" class="spinner-border spinner-border-sm" role="status"></div>
-                Create Post
+                Edit Post
             </button>
         </form>
 
@@ -29,6 +29,7 @@
 import { reactive, ref } from '@vue/reactivity'
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import { useRoute } from 'vue-router';
 export default {
     setup(){
         const form = reactive({
@@ -39,6 +40,21 @@ export default {
         });
 
         const loading = ref(false)
+        const route = useRoute()
+
+        function getPost(){
+            axios
+            .get(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`)
+            .then(function (response) {
+                form.title = response.data.title
+                form.body = response.data.body
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+
+        getPost();
 
         function validate(){
             if(form.title === ""){
@@ -55,23 +71,24 @@ export default {
 
             if(form.title !== "" && form.body !== ""){                
                 loading.value = true
-                createPost()
+                updatePost()
             }
         }
 
-        function createPost(){
+        function updatePost(){
             axios
-            .post('https://jsonplaceholder.typicode.com/posts',{
+            .put(`https://jsonplaceholder.typicode.com/posts/${route.params.id}`,{
+                id: route.params.id,
                 title: form.title,
                 body: form.body,
-                userId: 1
+                userId: 1,
             })
             .then(function () {
                 loading.value = false
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
-                    title: 'Post created successfully...',
+                    title: 'Post updated successfully...',
                     showConfirmButton: false,
                     timer: 1500
                 })
