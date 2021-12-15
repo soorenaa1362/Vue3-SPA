@@ -31,7 +31,7 @@ export default {
                 loading.value = false;
 
                 Swal.fire({
-                    title: "Thanks!",
+                    title: "Message!",
                     text: "Post created successfully",
                     icon: "success",
                     confirmButtonText: "Ok",

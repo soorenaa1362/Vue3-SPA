@@ -6,12 +6,7 @@
     <div v-else class="col-md-6">
         <h2 class="mb-5">Edit Post :</h2>
 
-        <PostForm
-        @formData="updatePost"
-        :button-loading="loading"
-        button-text="Edit Post"
-        :post="post"
-        />
+        <PostForm @formData="updatePost" :button-loading="loading" button-text="Edit Post" :post="post" />
     </div>
 </template>
 
